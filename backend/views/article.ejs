@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= article?.title || 'Article' %></title>
+  <meta name="description" content="<%= article?.description || '' %>" />
+
+  <!-- Open Graph for social preview -->
+  <meta property="og:title" content="<%= article?.title || '' %>" />
+  <meta property="og:description" content="<%= article?.description || '' %>" />
+  <meta property="og:type" content="article" />
+ 
+</head>
+<body>
+  <div class="container">
+    <div class="article-card">
+      <header>
+        <h1><%= article?.title || '' %></h1>
+        <% if (article?.description) { %>
+          <p class="subtitle"><%= article.description %></p>
+        <% } %>
+        <div class="meta">
+          <div class="author">
+            By
+            <strong>
+              <%= (author?.firstName || '').trim() %>
+              <%= (author?.lastName || '').trim() %>
+            </strong>
+          </div>
+          <span class="dot" aria-hidden="true"></span>
+          <div class="dates">
+            <span>Published:
+              <%= new Date(article?.addedTime || Date.now()).toLocaleString() %>
+            </span>
+            <% if (article?.changedTime) { %>
+              <span> · Updated:
+                <%= new Date(article.changedTime).toLocaleString() %>
+              </span>
+            <% } %>
+          </div>
+        </div>
+
+        <% if (Array.isArray(article?.tags) && article.tags.length) { %>
+          <div class="tags">
+            <% article.tags.forEach(function(tag) { %>
+              <span class="tag"><%= String(tag) %></span>
+            <% }); %>
+          </div>
+        <% } %>
+      </header>
+
+      <article>
+        <!-- If `article.text` contains HTML, it can be injected using !-->
+        <% if (article?.text) { %>
+          <%- article.text %>
+        <% } else { %>
+          <p>No content available.</p>
+        <% } %>
+      </article>
+
+      <section class="footer-note">
+        <div>
+          Views: <strong><%= Number.isFinite(article?.viewsCount) ? article.viewsCount : 0 %></strong>
+          · Clicks: <strong><%= Number.isFinite(article?.clickCount) ? article.clickCount : 0 %></strong>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
+
+

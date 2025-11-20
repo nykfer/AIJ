@@ -24,23 +24,61 @@ app.get('/health', async (req, res) => {
 });
 
 // Routes
-app.use('/api/articles', require('./routes/articles'));
+// app.use('/api/articles', require('./routes/articles'));
 
 // Server-rendered article page
 const DB_NAME = process.env.MONGO_DB_NAME || 'aij';
 const COLLECTION_NAME = process.env.MONGO_COLLECTION_NAME || 'articles';
 
-// Latest article redirect
-app.get('/articles/latest', async (req, res) => {
+/**
+ * Fetches latest articles from database using the same logic as /articles/latest
+ * @param {number} limit - Maximum number of articles to fetch
+ * @returns {Promise<Array>} Array of article documents
+ */
+async function fetchLatestArticles(limit = 10) {
+  const col = await getOrCreateCollection(DB_NAME, COLLECTION_NAME);
+  const latest = await col.find({}).sort({ 'article.changedTime': -1, 'article.addedTime': -1 }).limit(limit).toArray();
+  return latest;
+}
+
+
+
+// API endpoint to get latest articles (JSON)
+app.get('/api/articles/latest', async (req, res) => {
   try {
-    const col = await getOrCreateCollection(DB_NAME, COLLECTION_NAME);
-    const latest = await col.find({}).sort({ 'article.changedTime': -1, 'article.addedTime': -1 }).limit(1).toArray();
-    if (!latest.length) return res.status(404).send('No articles');
-    return res.redirect(`/articles/${latest[0]._id.toString()}`);
+    const limit = parseInt(req.query.limit) || 10;
+    const articles = await fetchLatestArticles(limit);
+    res.json(articles);
   } catch (err) {
-    return res.status(500).send(err?.message || 'Server error');
+    res.status(500).json({ error: err?.message || 'Server error' });
   }
 });
+
+// API endpoint to get latest articles grouped by 2 for cards
+app.get('/api/articles/latest/cards', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const articles = await fetchLatestArticles(limit);
+    
+    // Group articles by 2 for cards
+    const groupedCards = [];
+    for (let i = 0; i < articles.length; i += 2) {
+      const group = articles.slice(i, i + 2);
+      groupedCards.push({
+        articles: group,
+        imageUrl: group[0]?.article?.imageUrl || null
+      });
+    }
+    
+    res.json(groupedCards);
+  } catch (err) {
+    res.status(500).json({ error: err?.message || 'Server error' });
+  }
+});
+
+// Routes
+app.use('/api/articles', require('./routes/articles'));
+
 
 app.get('/articles/:id', async (req, res) => {
   try {

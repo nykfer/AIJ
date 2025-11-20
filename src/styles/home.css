@@ -1,0 +1,28 @@
+/* Home split layout */
+.home-split {
+  display: flex;
+  align-items: stretch;
+  gap: 1.25rem;
+}
+
+.home-container-left {
+  flex: 0 1 36%;
+  min-width: 240px;
+}
+
+.home-container-right {
+  flex: 1 1 64%;
+}
+
+/* Ensure the vertical divider spans the full column height */
+.home-split .divider--vertical {
+  display: block;
+  align-self: stretch;
+  height: auto;
+}
+
+/* Left rail small cards */
+.left-rail-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+}

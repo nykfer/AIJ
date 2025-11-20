@@ -11,62 +11,180 @@
   <meta property="og:description" content="<%= article?.description || '' %>" />
   <meta property="og:type" content="article" />
  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@12..72,400;12..72,500&family=Inter:wght@400;500&display=swap');
+
+    :root {
+      --color-text: #121212;
+      --color-muted: #4b4b4b;
+      --color-border: #e5e5e5;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: #ffffff;
+      color: var(--color-text);
+      font-family: 'Source Serif 4', 'Georgia', serif;
+      display: flex;
+      justify-content: center;
+      padding: 4rem 1rem 5rem;
+    }
+
+    .article-page {
+      width: min(720px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    header {
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', 'Times New Roman', serif;
+      font-weight: 600;
+      font-size: clamp(2.3rem, 5vw, 3.4rem);
+      line-height: 1.15;
+      margin: 0 0 1.25rem;
+    }
+
+    .subtitle {
+      font-family: 'Source Serif 4', 'Georgia', serif;
+      font-size: 1.2rem;
+      color: var(--color-muted);
+      margin: 0 auto 1.75rem;
+      max-width: 60ch;
+    }
+
+    .divider {
+      border: none;
+      height: 1px;
+      width: 100%;
+      background-color: var(--color-border);
+      margin: 0 auto 2rem;
+    }
+
+    .hero {
+      margin: 0 auto 1rem;
+      width: 100%;
+    }
+
+    .hero img {
+      display: block;
+      width: 100%;
+      max-height: 520px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+    }
+
+    .caption {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.9rem;
+      color: var(--color-muted);
+      margin-top: 0.75rem;
+      text-align: left;
+    }
+
+    .byline {
+      width: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--color-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+
+    .byline strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    article {
+      width: 100%;
+      font-size: 1.1rem;
+      line-height: 1.9;
+      color: var(--color-text);
+    }
+
+    article :where(p, ul, ol, blockquote) {
+      margin-bottom: 1.5rem;
+    }
+
+    article blockquote {
+      padding-left: 1.25rem;
+      border-left: 3px solid #d1d1d1;
+      font-style: italic;
+      color: var(--color-muted);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 3rem 1rem;
+      }
+
+      .subtitle {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+
 </head>
 <body>
-  <div class="container">
-    <div class="article-card">
-      <header>
-        <h1><%= article?.title || '' %></h1>
-        <% if (article?.description) { %>
-          <p class="subtitle"><%= article.description %></p>
-        <% } %>
-        <div class="meta">
-          <div class="author">
-            By
-            <strong>
-              <%= (author?.firstName || '').trim() %>
-              <%= (author?.lastName || '').trim() %>
-            </strong>
-          </div>
-          <span class="dot" aria-hidden="true"></span>
-          <div class="dates">
-            <span>Published:
-              <%= new Date(article?.addedTime || Date.now()).toLocaleString() %>
-            </span>
-            <% if (article?.changedTime) { %>
-              <span> · Updated:
-                <%= new Date(article.changedTime).toLocaleString() %>
-              </span>
-            <% } %>
-          </div>
-        </div>
+  <% const publishedAt = article?.addedTime ? new Date(article.addedTime) : new Date(); %>
+  <% const updatedAt = article?.changedTime ? new Date(article.changedTime) : null; %>
+  <main class="article-page">
+    <header>
+      <h1><%= article?.title || '' %></h1>
+      <% if (article?.description) { %>
+        <p class="subtitle"><%= article.description %></p>
+      <% } %>
+      <hr class="divider" />
+    </header>
 
-        <% if (Array.isArray(article?.tags) && article.tags.length) { %>
-          <div class="tags">
-            <% article.tags.forEach(function(tag) { %>
-              <span class="tag"><%= String(tag) %></span>
-            <% }); %>
-          </div>
-        <% } %>
-      </header>
+    <% if (article?.imageUrl) { %>
+      <figure class="hero">
+        <img src="<%= article.imageUrl %>" alt="<%= article?.title || 'Article image' %>" loading="lazy" />
+      </figure>
+    <% } %>
 
-      <article>
-        <!-- If `article.text` contains HTML, it can be injected using !-->
-        <% if (article?.text) { %>
-          <%- article.text %>
-        <% } else { %>
-          <p>No content available.</p>
-        <% } %>
-      </article>
-
-      <section class="footer-note">
+    <div class="byline">
+      <div>
+        By
+        <strong>
+          <%= [author?.firstName, author?.lastName].filter(Boolean).join(' ') || 'AIJ Team' %>
+        </strong>
+      </div>
+      <div>
+        Published:
+        <strong><%= publishedAt.toLocaleString() %></strong>
+      </div>
+      <% if (updatedAt && updatedAt.getTime() !== publishedAt.getTime()) { %>
         <div>
-          Views: <strong><%= Number.isFinite(article?.viewsCount) ? article.viewsCount : 0 %></strong>
-          · Clicks: <strong><%= Number.isFinite(article?.clickCount) ? article.clickCount : 0 %></strong>
+          Updated:
+          <strong><%= updatedAt.toLocaleString() %></strong>
         </div>
-      </section>
+      <% } %>
     </div>
-  </div>
+
+    <article>
+      <% if (article?.text) { %>
+        <%- article.text %>
+      <% } else { %>
+        <p>No content available.</p>
+      <% } %>
+    </article>
+  </main>
 </body>
 </html>
 

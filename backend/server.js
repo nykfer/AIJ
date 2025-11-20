@@ -4,6 +4,13 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 dotenv.config();
 const uri = process.env.MONGO_URI;
 
+if (!uri || typeof uri !== 'string' || !uri.trim()) {
+  throw new Error(
+    'MongoDB connection string missing.\n' +
+    'Set MONGO_URI in backend/.env (or environment) before using the database helpers.'
+  );
+}
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {

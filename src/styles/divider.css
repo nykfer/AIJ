@@ -1,0 +1,91 @@
+/*
+  Divider utilities
+  ---------------------------------
+  Customize via CSS variables per element:
+
+    --divider-thickness: border width of the line (e.g., 1px, 2px)
+    --divider-length: width for horizontal, height for vertical (e.g., 100%, 12rem)
+    --divider-color: color of the line (any valid color)
+    --divider-opacity: 0..1 overall opacity
+    --divider-style: solid | dashed | dotted | double
+    --divider-gap: block or inline gap/margins around the divider
+    --divider-radius: corner radius used by gradient style
+*/
+
+:root {
+  --divider-thickness: 1px;
+  --divider-length: 100%;
+  --divider-color: hsl(0 0% 0% / 0.12);
+  --divider-opacity: 1;
+  --divider-style: solid;
+  --divider-gap: 0.75rem;
+  --divider-radius: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --divider-color: hsl(0 0% 100% / 0.16);
+  }
+}
+
+/* Base horizontal divider */
+.divider {
+  display: block;
+  border: 0;
+  width: var(--divider-length);
+  margin: var(--divider-gap) auto;
+  opacity: var(--divider-opacity);
+  border-top: var(--divider-thickness) var(--divider-style) var(--divider-color);
+}
+
+.divider-global {
+  width: 100%;
+  margin: var(--divider-gap) 0;
+}
+
+/* Style modifiers */ 
+.divider--dashed { --divider-style: dashed; }
+.divider--dotted { --divider-style: dotted; }
+.divider--double { --divider-style: double; } 
+
+/* Vertical divider variant */
+.divider--vertical {
+  display: inline-block;
+  border: 0;
+  height: var(--divider-length);
+  width: auto;
+  margin: 0 var(--divider-gap);
+  opacity: var(--divider-opacity);
+  border-left: var(--divider-thickness) var(--divider-style) var(--divider-color);
+}
+
+/* Gradient effect (horizontal) */
+.divider--gradient {
+  border: 0;
+  height: var(--divider-thickness);
+  width: var(--divider-length);
+  margin: var(--divider-gap) auto;
+  opacity: var(--divider-opacity);
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--divider-color),
+    transparent
+  );
+  border-radius: var(--divider-radius);
+}
+
+/* Gradient effect for vertical divider */
+.divider--vertical.divider--gradient {
+  width: var(--divider-thickness);
+  height: var(--divider-length);
+  margin: 0 var(--divider-gap);
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--divider-color),
+    transparent
+  );
+}
+
+

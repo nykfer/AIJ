@@ -30,7 +30,7 @@ async function main() {
   try {
     const col = await getOrCreateCollection(DB_NAME, COLLECTION_NAME);
     const docs = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 10; i < 20; i++) {
       docs.push(buildSampleArticle(i));
     }
     const result = await col.insertMany(docs);

@@ -1,0 +1,103 @@
+/* Header orientation - centered at the top */
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem 1.25rem;
+  background: rgba(248, 247, 242, 0.9);
+  border: 1px solid rgba(205, 213, 217, 0.8);
+  border-radius: 0;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 14px 35px rgba(65, 90, 119, 0.12);
+}
+
+/* Top row with time/text on left and logo */
+.header-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.header-logo-image {
+  position: absolute;
+  right: 5rem;
+  top: 100%;
+  transform: translate(50%, -50%);
+  height: 125px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Left side container for time and text */
+.header-left {
+  position: absolute;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+
+/* Current time - same styling as links */
+.header-time {
+  color: var(--color-accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(65, 90, 119, 0.08);
+  border: 1px solid rgba(65, 90, 119, 0.18);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.header-time:hover {
+  color: var(--color-secondary);
+  background: rgba(119, 141, 169, 0.12);
+}
+
+/* Text below time */
+.header-text {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem 0.9rem;
+}
+
+/* Navigation container for links */
+.header-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Text style for links */
+.header-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.header-link:hover,
+.header-link:focus-visible {
+  color: #fff;
+  background: var(--color-accent);
+}
+
+/* Company logo - AIJ */
+.company-logo {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.3rem;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}

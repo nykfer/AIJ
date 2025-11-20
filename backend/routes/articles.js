@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET by id
+// GET by id (only match valid Mongo ObjectId-like strings to avoid catching '/latest')
 router.get('/:id', async (req, res) => {
   try {
     const { ObjectId } = require('mongodb');

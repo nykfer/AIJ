@@ -1,0 +1,129 @@
+/* Container fills viewport and disables native scrolling inside for a paged feel */
+.about-container {
+	position: relative;
+	/* let it flow with the page */
+	height: auto;
+	width: 100%;
+	overflow: visible;
+}
+
+.about-stage {
+	position: relative;
+	/* allow natural height */
+	height: auto;
+	width: 100%;
+}
+
+/* Each slide flows in document order; we animate opacity for crossfade */
+.about-slide {
+	position: relative;
+	min-height: 100vh; /* full-viewport reading experience without isolating the page */
+	display: grid; /* center content nicely */
+	place-items: center; 
+	padding: clamp(3rem, 8vw, 5rem) clamp(1rem, 5vw, 3rem);
+	opacity: 0;
+	transition: opacity 600ms ease;
+	will-change: opacity;
+	background: transparent;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+	.about-slide {
+		transition: none;
+	}
+}
+
+/* Visible slide */
+.about-slide.is-visible {
+	opacity: 1;
+}
+
+.about-content {
+	width: min(75vw, 1200px);
+	min-height: 75vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	background: rgba(255, 255, 255, 0.92);
+	border-radius: 36px;
+	padding: clamp(2.5rem, 7vw, 5rem);
+	border: 1px solid rgba(205, 213, 217, 0.75);
+	box-shadow: 0 35px 75px rgba(31, 37, 51, 0.12);
+	transition: background 600ms ease, transform 400ms ease, box-shadow 400ms ease;
+	transform: translateY(12px);
+}
+
+.about-slide.is-visible .about-content {
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(223, 231, 241, 0.9));
+	box-shadow: 0 45px 85px rgba(31, 37, 51, 0.16);
+	transform: translateY(0);
+}
+
+/* Headings inside the about cards */
+.about-content h1,
+.about-content h2 {
+	margin: 0 0 1rem;
+	font-size: clamp(2.4rem, 6vw, 3.8rem);
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	color: var(--color-accent);
+}
+
+/* Paragraphs inside the about cards */
+.about-content p {
+	margin: 0 auto;
+	font-size: clamp(1.2rem, 3vw, 1.5rem);
+	line-height: 1.85;
+	max-width: 60ch;
+	color: var(--color-text-muted);
+}
+
+/* Lists inside the about cards */
+.about-content ul {
+	margin: 1.5rem auto;
+	padding-left: clamp(1.25rem, 3vw, 2rem);
+	font-size: clamp(1.2rem, 3vw, 1.5rem);
+	line-height: 1.8;
+	max-width: 65ch;
+	color: var(--color-text-muted);
+}
+
+.about-content li {
+	margin-bottom: 0.65rem;
+}
+
+/* Pagination dots */
+.about-dots {
+	position: absolute;
+	left: 50%;
+	bottom: 24px;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 10px;
+	z-index: 5;
+}
+
+.about-dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 999px;
+	background: rgba(65, 90, 119, 0.25);
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	transition: background-color 250ms ease, transform 250ms ease;
+}
+.about-dot.is-active {
+	background: var(--color-accent);
+	transform: scale(1.2);
+}
+.about-dot:focus-visible {
+	outline: 2px solid var(--color-secondary);
+	outline-offset: 3px;
+}
+
+/* Remove dark background theme variables entirely; inherit page styles */
+
+

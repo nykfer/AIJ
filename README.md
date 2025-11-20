@@ -1,54 +1,64 @@
 # AIJ (AI Insight Journal) (виконав студент групи КІ-32, Риженко Нікіта)
 
 ## Опис
-AIJ — це вебзастосунок для створення, публікації та читання статей з елементами аналітики на основі ШІ. Фронтенд побудовано на React (Vite), бекенд — на Node.js/Express з рендерингом статей через EJS.
+AIJ — це вебзастосунок для створення, публікації та читання статей з елементами аналітики на основі ШІ. Фронтенд побудовано на React (Vite), бекенд — на Node.js/Express з рендерингом статей через EJS і MongoDB як сховище.
 
 Основна мета проєкту — зробити роботу з контентом швидкою та зручною, поєднавши генерацію/підказки ШІ з класичним редакторським потоком.
 
-## Структура проєкту
+## Можливості
+- Вітальна сторінка з блоками «останні новини» та картками статей, що динамічно підтягуються через REST API (`/api/articles/latest`, `/api/articles/latest/cards`).
+- Сторінка статті (`/articles/:id`) рендериться на бекенді через EJS для кращого SEO та шарингу.
+- CRUD API для колекції статей/авторів (`/api/articles`), включно з лічильниками переглядів/кліків.
+- Попередньо налаштований проксі у Vite (`vite.config.js`), який прозоро прокидає `/api` та `/articles` на бекенд під час розробки.
+- Скрипт для швидкого наповнення бази демонстраційними статтями (`backend/post_sample_articles.js`).
+
+## Структура проєкту (детально)
 
 ```text
 AIJ/
-  backend/
-    app.js
-    index.js
-    package-lock.json
-    package.json
-    post_sample_articles.js
-    routes/
-      articles.js
-    server.js
-    views/
-      article.ejs
-  eslint.config.js
-  index.html
-  package-lock.json
-  package.json
-  public/
-    vite.svg
-  README.md
-  src/
-    About.jsx
-    Analitycs.jsx
-    App.css
-    App.jsx
-    assets/
-      react.svg
-      web-logo.jpg
-    Contact.jsx
-    Home.jsx
-    index.css
-    main.jsx
-    News.jsx
-    Writer.jsx
-  vite.config.js
+├── backend/                      # Node.js/Express API та інтеграція з MongoDB
+│   ├── app.js                    # Конфігурація Express, REST-ендпоінти, SSR-роути
+│   ├── index.js                  # Точка входу, запуск HTTP-сервера
+│   ├── server.js                 # Підключення до MongoDB, хелпери колекцій
+│   ├── routes/
+│   │   └── articles.js           # CRUD API для документів author+article
+│   ├── views/
+│   │   └── article.ejs           # Шаблон сторінки статті для `/articles/:id`
+│   └── post_sample_articles.js   # Скрипт наповнення тестових статей
+│
+├── src/                          # Vite/React фронтенд
+│   ├── App.jsx                   # Маршрутизація, глобальний layout
+│   ├── Home.jsx                  # Головна сторінка з картками новин
+│   ├── About.jsx, Contact.jsx    # Статичні сторінки
+│   ├── News.jsx, Analitycs.jsx   # Плейсхолдери контентних сторінок
+│   ├── Header.jsx                # Навігаційний бар
+│   ├── styles/                   # Тематичні CSS (header, card, divider, home)
+│   └── assets/                   # Логотипи, графіка
+│
+├── public/                       # Статичні файли Vite (favicon, svg)
+├── vite.config.js                # Dev-сервер з проксі на бекенд
+├── package.json                  # Залежності та скрипти фронтенда
+└── backend/package.json          # Залежності та скрипти бекенда
 ```
 
-- **backend/**: серверна частина на Node.js/Express, роути і рендер через EJS.
-- **backend/server.js**: завантаження бази даних (MongoDB)
-- **backend/routes/article.js**: API для взаємодії з базою даних (MongoDB)
-- **backend/views/article.ejs**: шаблон для динамічної сторінки новин
-- **src/**: фронтенд на React (Vite): сторінки/компоненти, стилі, активи.
-- **public/**: публічні статичні файли, що віддаються як є.
-- **vite.config.js**: конфігурація Vite для фронтенду.
-- **index.html**: кореневий HTML-шаблон для Vite-додатку.
+## REST API (скорочено)
+
+| Метод та шлях | Опис |
+| --- | --- |
+| `GET /api/articles` | Отримати всі статті |
+| `POST /api/articles` | Створити статтю (автор + контент) |
+| `GET /api/articles/:id` | Отримати статтю за MongoID |
+| `PUT /api/articles/:id` | Повністю оновити документ |
+| `PATCH /api/articles/:id` | Часткове оновлення/лічильники |
+| `DELETE /api/articles/:id` | Видалити статтю |
+| `GET /api/articles/latest?limit=10` | Останні N статей для списку |
+| `GET /api/articles/latest/cards` | Згруповані по 2 статті для головних карток |
+| `GET /articles/:id` | SSR-сторінка статті (EJS) |
+
+## Наповнення тестовими даними
+Після налаштування `backend/.env` можна швидко додати 10 демонстраційних статей:
+```bash
+cd backend
+node post_sample_articles.js
+```
+Скрипт використовує ті самі змінні оточення для підключення до MongoDB та створює стандартні документи з базовими полями автора й статті.
